@@ -1,0 +1,23 @@
+
+### linaro gcc aarch64 toolchain 4.9.x 
+
+export USE_CCACHE=1
+export ARCH=arm64
+export PATH=/mnt/Building/aarch64-linux-gnu-4.9/bin/:$PATH
+### See prefix of file names in the toolchain's bin directory
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+export KBUILD_DIFFCONFIG=dora_diffconfig
+make msm-perf_defconfig
+make -j16
+
+echo "checking for compiled kernel..."
+if [ -f arch/arm64/boot/Image.gz-dtb ]
+then
+
+	echo "DONE"
+
+	### F8132
+../final_files/mkbootimg --kernel arch/arm64/boot/Image.gz-dtb --ramdisk ../final_files/kernel.sin-ramdisk.cpio.gz --cmdline "androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 cma=16M@0-0xffffffff coherent_pool=2M enforcing=0" --base 0x80000000 --pagesize 4096 --ramdisk_offset 0x02200000 --tags_offset 0x02000000 --output ../final_files/boot_F8131_final_dev.img
+
+fi
